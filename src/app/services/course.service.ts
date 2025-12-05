@@ -5,7 +5,7 @@ import { CustomAppError } from "../errors/customError";
 import { Course } from "../models/course.schema";
 
 // Create Course
-const createCourse = async (payload: ICourse) => {
+const createCourse = async (payload:any) => {
   console.log(payload)
   const course = await Course.create(payload);
   
