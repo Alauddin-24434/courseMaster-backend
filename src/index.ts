@@ -14,10 +14,16 @@ app.use(cors({
   credentials: true                 // cookie allow
 }));
 app.use(cookieParser());            // <-- USE THIS
-
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message:"CourseMaster server is running"
+  })
+})
 // Routes
 app.use("/api/v1", baseRouter);
 // POST /api/enroll
+
 
 
 // 404 Route
