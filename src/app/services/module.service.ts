@@ -28,16 +28,51 @@ const updateModule = async (
   return mod;
 };
 
-// Get single Module
-const getModuleById = async (courseId: string, moduleId: string) => {
+const getModulesByCourseId = async (courseId: string, studentId: string) => {
   const course = await Course.findById(courseId);
   if (!course) throw new CustomAppError(404, "Course not found");
 
-  const mod = course.modules.id(moduleId);
-  if (!mod) throw new CustomAppError(404, "Module not found");
+  // Find the student progress object
+ // studentId ধরে student progress বের করা
+const studentProgressDoc = course.students.find(
+  (s: any) => s.studentId.toString() == studentId
+);
+  console.log(studentProgressDoc)
 
-  return mod;
+  const completedLessons = studentProgressDoc?.completedLessons;
+// প্রতিটি module এর জন্য
+const modules = course.modules.map((mod: any) => {
+  // module এর lesson এর মধ্যে student কতটা complete করেছে
+  const completedCount = mod.lessons.filter((les: any) =>
+    completedLessons.includes(les._id)
+  ).length;
+
+  const lessonCount = mod.lessons.length;
+
+  const progressPercentage =
+    lessonCount > 0 ? Math.round((completedCount / lessonCount) * 100) : 0;
+
+  return {
+    _id: mod._id,
+    title: mod.title,
+    lessonCount,
+    completedCount,
+    progressPercentage,
+    lessons: mod.lessons.map((les: any) => ({
+      _id: les._id,
+      title: les.title,
+      duration: les.duration,
+      videoUrl: les.videoUrl,
+    })),
+  };
+});
+
+
+  
+  return { modules};
 };
+
+
 
 // Get all Modules for a course
 const getAllModules = async (courseId: string) => {
@@ -102,7 +137,7 @@ const getAllLessons = async (courseId: string, moduleId: string) => {
 export const moduleService = {
   addModule,
   updateModule,
-  getModuleById,
+  getModulesByCourseId,
   getAllModules,
   addLesson,
   getLessonById,

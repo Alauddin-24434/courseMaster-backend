@@ -16,7 +16,6 @@ export interface ICourse {
   category: string;
   tags?: string[];
   instructor: string;
-  enrollCounts: string[];
   courseIncludes?: string[];
   isPublished?: boolean;
 }

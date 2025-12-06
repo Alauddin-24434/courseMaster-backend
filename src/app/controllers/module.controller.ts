@@ -15,9 +15,11 @@ const updateModule = catchAsyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({ status: "success", data: module });
 });
 
-const getModuleById = catchAsyncHandler(async (req: Request, res: Response) => {
-  const { courseId, moduleId } = req.params;
-  const module = await moduleService.getModuleById(courseId, moduleId);
+const getModuleByCourseId = catchAsyncHandler(async (req: Request, res: Response) => {
+  const { courseId } = req.params;
+  const studentId = req.user?._id;
+  console.log("s",studentId)
+  const module = await moduleService.getModulesByCourseId(courseId, studentId);
   res.status(200).json({ status: "success", data: module });
 });
 
@@ -49,7 +51,7 @@ const getAllLessons = catchAsyncHandler(async (req: Request, res: Response) => {
 export const moduleController = {
   addModule,
   updateModule,
-  getModuleById,
+  getModuleByCourseId,
   getAllModules,
   addLesson,
   getLessonById,
